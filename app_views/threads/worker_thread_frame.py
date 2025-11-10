@@ -3,6 +3,7 @@ from PyQt5 import QtCore
 
 from app_controllers.utils.frame_helper import *
 import cv2
+import numpy as np
 import pyttsx3
 try:
     import winsound   # Windows beep
@@ -125,10 +126,19 @@ class WorkerThreadFrame(QtCore.QThread):
                 self.alert_active = False
 
             # --- New: on-screen warning while alert active ---
-            if self.alert_active:
+            # --- New: on-screen warning while alert active ---
+            if self.alert_active and self.frame is not None:
+                # Ensure we have a proper, contiguous uint8 image for OpenCV drawing
+                if not isinstance(self.frame, np.ndarray):
+                    frame_for_draw = np.array(self.frame)
+                else:
+                    frame_for_draw = self.frame
+
+                frame_for_draw = np.ascontiguousarray(frame_for_draw)
+
                 msg = "WARNING: Slouching for 30+ seconds! Sit up straight."
                 cv2.putText(
-                    self.frame,
+                    frame_for_draw,
                     msg,
                     (20, 40),
                     cv2.FONT_HERSHEY_SIMPLEX,
@@ -137,7 +147,13 @@ class WorkerThreadFrame(QtCore.QThread):
                     2,
                     cv2.LINE_AA,
                 )
+
+                # Put it back so the GUI sees the updated frame
+                self.frame = frame_for_draw
+
+            # Send updated frame + results to the GUI
             self.update_camera.emit(self.model, self.view, self.frame, fps, results)
+
 
     def stop(self):
         # terminate the while loop in self.run() method

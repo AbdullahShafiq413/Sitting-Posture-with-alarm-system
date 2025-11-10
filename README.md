@@ -26,7 +26,8 @@ to help you keep a healthy sitting posture.
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/AbdullahShafiq413/Sitting-Posture-with-alarm-system.git
+   Open Project in VS Code (or any other)
+   Go to terminal 
    cd Sitting-Posture-with-alarm-system
 ````
 
