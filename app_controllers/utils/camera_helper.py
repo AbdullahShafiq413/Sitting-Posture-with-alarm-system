@@ -5,6 +5,25 @@ from PyQt5.QtMultimedia import QCameraInfo
 '''
 
 
+# def get_connected_camera_ids():
+#     """
+#     Retrieves the ports of connected cameras
+
+#     Returns:
+#         available_ports: Available ports.
+#     """
+#     available_ports = []
+#     for x in range(5):
+#         camera = cv2.VideoCapture(x)
+#         if camera.isOpened():
+#             available_ports.append(x)
+#             ret, frame = camera.read()
+#             if not ret:
+#                 print("Can't receive frame (stream end?). Exiting ...")
+#                 break
+#     return available_ports
+
+
 def get_connected_camera_ids():
     """
     Retrieves the ports of connected cameras
@@ -14,14 +33,18 @@ def get_connected_camera_ids():
     """
     available_ports = []
     for x in range(5):
-        camera = cv2.VideoCapture(x)
+        # Use DirectShow backend on Windows
+        camera = cv2.VideoCapture(x, cv2.CAP_DSHOW)
         if camera.isOpened():
             available_ports.append(x)
             ret, frame = camera.read()
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
+                camera.release()
                 break
+        camera.release()
     return available_ports
+
 
 
 def get_connected_camera_alias():

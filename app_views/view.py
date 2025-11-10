@@ -10,12 +10,9 @@ from PyQt5.QtWidgets import QComboBox, QLabel, QPushButton, QGroupBox, QRadioBut
 from app_controllers.controller import Controller
 from app_controllers.utils.camera_helper import get_connected_camera_alias
 from app_controllers.utils.update_helper import is_update
-from app_views.about_view import AboutWindow
+# from app_views.about_view import AboutWindow   # <-- removed, no longer needed
 from app_views.threads.worker_thread_pause_screen import WorkerThreadPauseScreen
 from app_views.threads.worker_thread_system_resource import WorkerThreadSystemResource
-
-'''Class for creating the application app_views
-'''
 
 
 class View(QMainWindow):
@@ -93,14 +90,7 @@ class View(QMainWindow):
         self.button_refresh.setFixedWidth(80)
         self.button_refresh.move(395, self.button_line_x)
 
-        # info button properties
-        self.button_information = QPushButton('', self)
-        size = 20
-        self.button_information.setFixedHeight(size)
-        self.button_information.setFixedWidth(size)
-        self.button_information.move(895, self.button_line_x + 4)
-        self.button_information.setIcon(QIcon('data/images/information.png'))
-        self.button_information.setIconSize(QSize(15, 15))
+        # NOTE: info button completely removed
 
         # groupbox properties
         self.groupbox_frame_options = QGroupBox(self)
@@ -217,10 +207,10 @@ class View(QMainWindow):
         button_x_position = 140  # Position for the color buttons
         button_offset = -5  # Horizontal offset to ensure centering
 
-        self.button_color_box.move(button_x_position, 118+button_offset)  # Bounding Box
-        self.button_color_class.move(button_x_position, 178+button_offset)  # Class
-        self.button_color_confidence.move(button_x_position, 148+button_offset)  # Confidence
-        self.button_color_bg.move(button_x_position, 208+button_offset)  # Background
+        self.button_color_box.move(button_x_position, 118 + button_offset)  # Bounding Box
+        self.button_color_class.move(button_x_position, 178 + button_offset)  # Class
+        self.button_color_confidence.move(button_x_position, 148 + button_offset)  # Confidence
+        self.button_color_bg.move(button_x_position, 208 + button_offset)  # Background
 
         # Set the colors as needed from the model
         self.button_color_box.setStyleSheet(
@@ -248,7 +238,8 @@ class View(QMainWindow):
         self.slider_brightness.setValue(100)
         self.slider_brightness.setSingleStep(1)
         self.slider_brightness.setTickInterval(10)
-        self.label_brightness_control = QLabel(str(self.slider_brightness.value()) + '%', self.groupbox_frame_options)
+        self.label_brightness_control = QLabel(str(self.slider_brightness.value()) + '%',
+                                               self.groupbox_frame_options)
         self.label_brightness_control.move(115, 270)
 
         # slider properties - contrast
@@ -262,7 +253,8 @@ class View(QMainWindow):
         self.slider_contrast.setValue(100)
         self.slider_contrast.setSingleStep(1)
         self.slider_contrast.setTickInterval(10)
-        self.label_contrast_control = QLabel(str(self.slider_contrast.value()) + '%', self.groupbox_frame_options)
+        self.label_contrast_control = QLabel(str(self.slider_contrast.value()) + '%',
+                                             self.groupbox_frame_options)
         self.label_contrast_control.move(115, 315)
 
         self.button_reset_brightness = QPushButton('Reset', self.groupbox_frame_options)
@@ -293,16 +285,7 @@ class View(QMainWindow):
         # disable stop button on start
         self.button_stop.setEnabled(False)
 
-        # set all groupboxes to specific color
-        # for groupBox in self.findChildren(QGroupBox):
-        #     groupBox.styleSheet() + """QGroupBox {background-color: #323844;}"""
-            #groupBox.setStyleSheet('QGroupBox {background-color: #323844;}')
-
-        # for groupBox in self.findChildren(QGroupBox):
-        #     for widget in groupBox.findChildren(QWidget):
-        #         if not isinstance(widget, QPushButton):
-        #             #widget.styleSheet() + """QWidget {background-color: #323844;}"""
-        #             widget.setStyleSheet('background-color: #323844;')
+        # Styles
         self.button_reset_brightness.setStyleSheet('QPushButton {'
                                                    'font-size: 10px;}'
                                                    'QPushButton:enabled {'
@@ -345,12 +328,6 @@ class View(QMainWindow):
                                           'border: 1px solid white;}'
                                           'QPushButton:enabled:hover {'
                                           'background-color: #2c4f7a;}')
-        self.button_information.setStyleSheet(f'QPushButton {{'
-                                              f'background-color: #4269b9;'
-                                              f'border-radius : {size / 2};'
-                                              f'border: none;}}'
-                                              f'QPushButton:enabled:hover {{'
-                                              f'background-color: #2c4f7a;}}')
 
         self.button_start.setStyleSheet('QPushButton:enabled {'
                                         'background-color: #4269b9;'
@@ -365,51 +342,24 @@ class View(QMainWindow):
         self.button_fullscreen.setStyleSheet('QPushButton:enabled {'
                                              'background-color: transparent;'
                                              'border: none;}')
+
         self.button_flip_horizontal.pressed.connect(
-            lambda: Controller.on_button_pressed(self.button_flip_horizontal, 'data'
-                                                                              '/images'
-                                                                              '/flip_horizontal_pressed'
-                                                                              '.png'))
+            lambda: Controller.on_button_pressed(self.button_flip_horizontal, 'data/images/flip_horizontal_pressed.png'))
         self.button_flip_horizontal.released.connect(
-            lambda: Controller.on_button_released(self.button_flip_horizontal, 'data'
-                                                                               '/images'
-                                                                               '/flip_horizontal'
-                                                                               '.png'))
+            lambda: Controller.on_button_released(self.button_flip_horizontal, 'data/images/flip_horizontal.png'))
 
         self.button_flip_vertical.pressed.connect(
-            lambda: Controller.on_button_pressed(self.button_flip_vertical, 'data'
-                                                                            '/images'
-                                                                            '/flip_vertical_pressed'
-                                                                            '.png'))
+            lambda: Controller.on_button_pressed(self.button_flip_vertical, 'data/images/flip_vertical_pressed.png'))
         self.button_flip_vertical.released.connect(
-            lambda: Controller.on_button_released(self.button_flip_vertical, 'data'
-                                                                             '/images'
-                                                                             '/flip_vertical'
-                                                                             '.png'))
-        self.button_rotate.pressed.connect(lambda: Controller.on_button_pressed(self.button_rotate, 'data'
-                                                                                                    '/images'
-                                                                                                    '/rotate_pressed'
-                                                                                                    '.png'))
-        self.button_rotate.released.connect(lambda: Controller.on_button_released(self.button_rotate, 'data'
-                                                                                                      '/images'
-                                                                                                      '/rotate'
-                                                                                                      '.png'))
-        self.button_fullscreen.pressed.connect(lambda: Controller.on_button_pressed(self.button_fullscreen, 'data'
-                                                                                                            '/images'
-                                                                                                            '/fullscreen_icon_pressed'
-                                                                                                            '.png'))
-        self.button_fullscreen.released.connect(lambda: Controller.on_button_pressed(self.button_fullscreen, 'data'
-                                                                                                             '/images'
-                                                                                                             '/fullscreen_icon'
-                                                                                                             '.png'))
-        self.button_information.pressed.connect(lambda: Controller.on_button_pressed(self.button_information, 'data'
-                                                                                                              '/images'
-                                                                                                              '/information_pressed'
-                                                                                                              '.png'))
-        self.button_information.released.connect(lambda: Controller.on_button_pressed(self.button_information, 'data'
-                                                                                                               '/images'
-                                                                                                               '/information'
-                                                                                                               '.png'))
+            lambda: Controller.on_button_released(self.button_flip_vertical, 'data/images/flip_vertical.png'))
+        self.button_rotate.pressed.connect(
+            lambda: Controller.on_button_pressed(self.button_rotate, 'data/images/rotate_pressed.png'))
+        self.button_rotate.released.connect(
+            lambda: Controller.on_button_released(self.button_rotate, 'data/images/rotate.png'))
+        self.button_fullscreen.pressed.connect(
+            lambda: Controller.on_button_pressed(self.button_fullscreen, 'data/images/fullscreen_icon_pressed.png'))
+        self.button_fullscreen.released.connect(
+            lambda: Controller.on_button_pressed(self.button_fullscreen, 'data/images/fullscreen_icon.png'))
 
         self.checkbox_enable_debug.stateChanged.connect(lambda: Controller.set_debug_mode(self))
         self.slider_brightness.valueChanged.connect(
@@ -439,8 +389,10 @@ class View(QMainWindow):
         self.button_fullscreen.clicked.connect(lambda: Controller.show_fullscreen(model))
         self.button_refresh.clicked.connect(lambda: Controller.update_combobox_camera_list_items(self, model))
         self.checkbox_switch_bbox_mode.stateChanged.connect(lambda: Controller.set_bbox_mode(self, model))
-        self.view_about = AboutWindow(self, model)
-        self.button_information.clicked.connect(lambda: Controller.show_about_view(self))
+
+        # AboutWindow and info button no longer used:
+        # self.view_about = AboutWindow(self, model)
+        # self.button_information.clicked.connect(lambda: Controller.show_about_view(self))
 
     def closeEvent(self, event):
         Controller.stop_worker_thread_camera(self.model)
