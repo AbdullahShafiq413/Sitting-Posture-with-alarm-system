@@ -104,27 +104,13 @@ class AboutWindow(QDialog):
         self.label_15.setText('{}'.format(model.commit_hash))
         self.label_6.setText("GitHub:")
         self.label_6.setStyleSheet('QLabel{font-weight: normal;}')
-        self.label_2.setText("<html><head/><body><p><a href=\"https://github.com/itakurah/SittingPostureDetection"
+        self.label_2.setText("<html><head/><body><p><a href=\""
                              "\"><span style=\" text-decoration: underline; "
-                             "color:#4269b9;\">https://github.com/itakurah/SittingPostureDetection</span></a></p"
+                             "color:#4269b9;\"/span></a></p"
                              "></body></html>")
         self.label_2.setStyleSheet('QLabel{font-weight: normal;}')
         self.label_7.setStyleSheet('QLabel{font-weight: normal;}')
-        self.label_7.setText(
-            "<html><head/><body><p><span style=\" font-family:'Courier New';\">MIT License</span></p><p><span "
-            "style=\" font-family:'Courier New';\">Copyright (c) 2023 Niklas Hoefflin</span></p><p><span style=\" "
-            "font-family:'Courier New';\">Permission is hereby granted, free of charge, to any person obtaining a "
-            "copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the "
-            "Software without restriction, including without limitation the rights to use, copy, modify, merge, "
-            "publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the "
-            "Software is furnished to do so, subject to the following conditions:</span></p><p><span style=\" "
-            "font-family:'Courier New';\">The above copyright notice and this permission notice shall be included in "
-            "all copies or substantial portions of the Software.</span></p><p><span style=\" font-family:'Courier "
-            "New';\">THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, "
-            "INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND "
-            "NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR "
-            "OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN "
-            "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span></p></body></html>")
+        self.label_7.setText("")
         self.label_8.setText("Icons:")
         self.label_8.setStyleSheet('QLabel{font-weight: normal;}')
         self.label_9.setText("<html><head/><body><p><a href=\"https://icons8.com/icon/37303/informationen\"><span "
