@@ -102,7 +102,7 @@ class AboutWindow(QDialog):
         self.label_4.setStyleSheet('QLabel{font-weight: normal;}')
         self.label_5.setText("Commit:")
         self.label_15.setText('{}'.format(model.commit_hash))
-        self.label_6.setText("GitHub:")
+        self.label_6.setText("")
         self.label_6.setStyleSheet('QLabel{font-weight: normal;}')
         self.label_2.setText("<html><head/><body><p><a href=\""
                              "\"><span style=\" text-decoration: underline; "
