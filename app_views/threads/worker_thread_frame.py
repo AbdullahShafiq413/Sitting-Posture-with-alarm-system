@@ -1,6 +1,5 @@
 import time
 from PyQt5 import QtCore
-
 from app_controllers.utils.frame_helper import *
 import cv2
 import numpy as np
@@ -9,10 +8,11 @@ try:
     import winsound   # Windows beep
 except ImportError:
     winsound = None
+from google import genai
+from google.genai import types
 
 '''Thread class for handling the received frames
 '''
-
 
 class WorkerThreadFrame(QtCore.QThread):
     update_camera = QtCore.pyqtSignal(object, object, object, object, object)
@@ -29,13 +29,10 @@ class WorkerThreadFrame(QtCore.QThread):
         # Place the camera object in the WorkThread
         self.frame = None
 
-                # Always use laptop camera (index 0)
+        # Always use laptop camera (index 0)
         self.id = 0
         self.camera = cv2.VideoCapture(self.id, cv2.CAP_DSHOW)
 
-        # read current selected camera id
-        # self.id = model.camera_mapping.get(view.combobox_camera_list.currentText())
-        # self.camera = cv2.VideoCapture(self.id)
         # set video format to mjpg to compress the frames to increase fps
         self.camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         # set frame resolution
@@ -59,7 +56,6 @@ class WorkerThreadFrame(QtCore.QThread):
         Assumes YOLOv5-style results (results.xyxy[0], results.names).
         """
         try:
-            # results.xyxy[0] -> tensor of [x1,y1,x2,y2,conf,cls]
             for *xyxy, conf, cls in results.xyxy[0]:
                 label = results.names[int(cls)]
                 if label == self.bad_posture_label and float(conf) > 0.5:
@@ -68,9 +64,42 @@ class WorkerThreadFrame(QtCore.QThread):
             print("Error parsing results in frame_has_bad_posture:", e)
         return False
     
+    def send_image_to_gemini(self, image_path):
+        """Send image to Gemini API for posture analysis and feedback."""
+        
+        # Set the API key directly in your code
+        api_key = "AIzaSyDqkOgDorzZz3NBx3JouwIXwkKCiejKiRY"  # Replace with your actual API key
+        
+        # Initialize the Gemini client with the API key
+        client = genai.Client(api_key=api_key)
+
+        with open(image_path, 'rb') as f:
+            image_bytes = f.read()
+
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=[
+                types.Part.from_bytes(
+                    data=image_bytes,
+                    mime_type='image/jpeg',
+                ),
+                'What is wrong with this person\'s posture, and provide a suggestion for improvement.'
+                'Just give 1 line on how the posture is bad and 1 line suggestion to improve it. Do not give long Paragraphs '
+            ]
+        )
+        
+        return response.text
+
     def trigger_posture_alert(self):
-        """Play a beep and speak a warning."""
+        """Capture image, send to Gemini, and trigger alert with TTS."""
         print("⚠️  Bad posture for 30+ seconds! Triggering alert...")
+
+        # Capture the frame (image) at the moment of bad posture
+        image_path = "bad_posture_image.jpg"
+        cv2.imwrite(image_path, self.frame)  # Save the captured frame to a file
+
+        # Send image to Gemini API for analysis
+        gemini_response = self.send_image_to_gemini(image_path)
 
         # Beep (Windows)
         if winsound is not None:
@@ -79,9 +108,9 @@ class WorkerThreadFrame(QtCore.QThread):
             except Exception as e:
                 print("Beep failed:", e)
 
-        # Voice
+        # Voice (Text-to-Speech)
         try:
-            self.tts_engine.say("Please sit straight. You have been slouching for thirty seconds.")
+            self.tts_engine.say(gemini_response)  # Use the response from Gemini as TTS
             self.tts_engine.runAndWait()
         except Exception as e:
             print("TTS failed:", e)
@@ -126,7 +155,6 @@ class WorkerThreadFrame(QtCore.QThread):
                 self.alert_active = False
 
             # --- New: on-screen warning while alert active ---
-            # --- New: on-screen warning while alert active ---
             if self.alert_active and self.frame is not None:
                 # Ensure we have a proper, contiguous uint8 image for OpenCV drawing
                 if not isinstance(self.frame, np.ndarray):
@@ -153,7 +181,6 @@ class WorkerThreadFrame(QtCore.QThread):
 
             # Send updated frame + results to the GUI
             self.update_camera.emit(self.model, self.view, self.frame, fps, results)
-
 
     def stop(self):
         # terminate the while loop in self.run() method
